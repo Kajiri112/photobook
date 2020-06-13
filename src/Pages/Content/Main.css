@@ -1,0 +1,49 @@
+.main {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+.titleImage {
+    min-height: 100%;
+    width: 100%;
+    background-image: url(../../assets/Shibuya.jpg);
+    background-size: cover;
+    background-position: center;
+}
+
+.scrollButton {
+    position: absolute;
+    bottom: 20px;
+    background-color: transparent;
+    border: 1px solid #eae2f5;
+    color: #eae2f5;
+    border-radius: 50%;
+    font-size: 20px;
+    padding: 25px;
+}
+
+.scrollButton:hover {
+    color: #6c4dc1;   
+    border: 1px solid #6c4dc1;
+}
+
+.panelContainer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    width: 80%;
+    margin-top: 200px;
+
+}
+
+.column {
+    flex: 50%;
+    margin-bottom: 20px;
+}
+
+.panel {
+    width: 500px;
+}
+
