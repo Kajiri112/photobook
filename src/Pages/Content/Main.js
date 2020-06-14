@@ -17,7 +17,7 @@ function Main() {
             <button className="scrollButton" onClick={() => window.scrollTo(0, myRef.current.offsetTop)}>Scroll</button>
         </div>
         <div className="panelContainer" ref={myRef}>
-            <div className="column"><img className="panel" src={reisen} /></div>
+            <div className="column"><a href="http://localhost:3000/reisen"><img className="panel" src={reisen} /></a></div>
             <div className="column"><img className="panel" src={figuren} /></div>
             <div className="column"><img className="panel" src={tiere} /></div>
             <div className="column"><img className="panel" src={diverses} /></div>

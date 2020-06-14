@@ -11,6 +11,9 @@
     background-image: url(../../assets/Shibuya.jpg);
     background-size: cover;
     background-position: center;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
 }
 
 .scrollButton {
