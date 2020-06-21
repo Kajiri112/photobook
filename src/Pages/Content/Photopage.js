@@ -2,22 +2,14 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "./Photopage.css";
 import Header from "../Header";
-
-function getImageHTML(images) {
-  console.log(images);
-  let imagesReturn = [];
-
-  for (let i = 0; i < images.length; i++) {
-    let adress = "http://localhost:8081/" + images[i];
-    let image = <img className="image" src={adress} key={i} />;
-    imagesReturn.push(image);
-  }
-  return imagesReturn;
-}
+import Lightbox from "react-image-lightbox";
+import "react-image-lightbox/style.css";
 
 function Photopage(props) {
-  console.log(props.name);
+  
   const [images, setImages] = useState([]);
+  const [photoIndex, setPhotoIndex] = useState(0);
+  const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     // Make a request for a user with a given ID
@@ -25,7 +17,17 @@ function Photopage(props) {
       .get("http://localhost:8081/images")
       .then(function (response) {
         // handle success
-        setImages(response.data);
+        let imagesReturn = [];
+        console.log(props.name);
+        console.log(response.data)
+
+        for (let i = 0; i < response.data.length; i++) {
+          if(response.data[i].startsWith(props.name)) {
+            let adress = "http://localhost:8081/" + response.data[i];
+            imagesReturn.push(adress);
+          }
+        }
+        setImages(imagesReturn);
       })
       .catch(function (error) {
         // handle error
@@ -33,10 +35,37 @@ function Photopage(props) {
       });
   }, []);
 
+  function getImageHTML() {
+    let imagesReturn = [];
+  
+    for (let i = 0; i < images.length; i++) {
+      let image = <img className="image" src={images[i]} key={i} onClick={() => {
+        setPhotoIndex(i);
+        setIsOpen(true);
+      }} />;
+      imagesReturn.push(image);
+    }
+    return imagesReturn;
+  }
+
   return (
     <div className="photopage">
       <Header />
-      {getImageHTML(images)}
+      {getImageHTML()}
+      {isOpen && (
+        <Lightbox
+          mainSrc={images[photoIndex]}
+          nextSrc={images[(photoIndex + 1) % images.length]}
+          prevSrc={images[(photoIndex + images.length - 1) % images.length]}
+          onCloseRequest={() => setIsOpen(false)}
+          onMovePrevRequest={() =>
+            setPhotoIndex((photoIndex + images.length - 1) % images.length)
+          }
+          onMoveNextRequest={() =>
+            setPhotoIndex((photoIndex + 1) % images.length)
+          }
+        />
+      )}
     </div>
   );
 }

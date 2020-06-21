@@ -1,7 +1,6 @@
 import React, { useRef } from 'react';
 import './Main.css';
 import Header from '../Header';
-import titleImage from '../../assets/Shibuya.jpg';
 import reisen from '../../assets/Reisen.jpg';
 import figuren from '../../assets/Figuren.jpg';
 import tiere from '../../assets/Tiere.jpg';
@@ -18,9 +17,9 @@ function Main() {
         </div>
         <div className="panelContainer" ref={myRef}>
             <div className="column"><a href="http://localhost:3000/reisen"><img className="panel" src={reisen} /></a></div>
-            <div className="column"><img className="panel" src={figuren} /></div>
-            <div className="column"><img className="panel" src={tiere} /></div>
-            <div className="column"><img className="panel" src={diverses} /></div>
+            <div className="column"><a href="http://localhost:3000/figuren"><img className="panel" src={figuren} /></a></div>
+            <div className="column"><a href="http://localhost:3000/tiere"><img className="panel" src={tiere} /></a></div>
+            <div className="column"><a href="http://localhost:3000/diverses"><img className="panel" src={diverses} /></a></div>
         </div>
     </div>
   );
