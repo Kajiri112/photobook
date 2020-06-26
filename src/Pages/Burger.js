@@ -26,8 +26,6 @@ function Burger() {
       <a id="contact" className="menu-item" href="https://www.instagram.com/kajiji/?hl=en">
         Instagram
       </a>
-      <a className="menu-item--small" href="">
-      </a>
     </Menu>
   );
 }
