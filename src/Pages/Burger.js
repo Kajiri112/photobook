@@ -1,28 +1,29 @@
 import React from "react";
 import "./Burger.css";
 import { slide as Menu } from "react-burger-menu";
+import { Link } from "react-router-dom";
 
 function Burger() {
   return (
     <Menu>
-      <a id="home" className="menu-item" href="http://localhost:3000/">
+      <Link id="home" className="menu-item" to="/">
         Home
-      </a>
-      <a id="about" className="menu-item" href="http://localhost:3000/about">
+      </Link>
+      <Link id="about" className="menu-item" to="/about">
         Über Mich
-      </a>
-      <a id="contact" className="menu-item" href="http://localhost:3000/reisen">
+      </Link>
+      <Link id="contact" className="menu-item" to="/reisen">
         Reisen
-      </a>
-      <a id="contact" className="menu-item" href="http://localhost:3000/figuren">
+      </Link>
+      <Link id="contact" className="menu-item" to="/figuren">
         Figuren
-      </a>
-      <a id="contact" className="menu-item" href="http://localhost:3000/tiere">
+      </Link>
+      <Link id="contact" className="menu-item" to="/tiere">
         Tiere
-      </a>
-      <a id="contact" className="menu-item" href="http://localhost:3000/diverses">
+      </Link>
+      <Link id="contact" className="menu-item" to="/diverses">
         Diverses
-      </a>
+      </Link>
       <a id="contact" className="menu-item" href="https://www.instagram.com/kajiji/?hl=en">
         Instagram
       </a>

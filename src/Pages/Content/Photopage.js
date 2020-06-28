@@ -4,19 +4,22 @@ import "./Photopage.css";
 import Header from "../Header";
 import Lightbox from "react-image-lightbox";
 import "react-image-lightbox/style.css";
-import { useLocation } from "react-router-dom";
+import { useLocation, Link } from "react-router-dom";
 
 function Photopage(props) {
   const [images, setImages] = useState([]);
   const [links, setLinks] = useState([]);
   const [photoIndex, setPhotoIndex] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
-  const location = useLocation().pathname;
+  let location = useLocation().pathname;
+  if(location.endsWith("/")) {
+    location = location.substring(0, location.length - 1);
+  }
 
   useEffect(() => {
     // Make a request for a user with a given ID
     axios
-      .get("http://localhost:8081/images")
+      .get("https://gocke-photo.de:8081/images")
       .then(function (response) {
         // handle success
         let imagesReturn = [];
@@ -25,7 +28,7 @@ function Photopage(props) {
             response.data[i].startsWith(location) &&
             response.data[i].lastIndexOf("/") == location.length
           ) {
-            let adress = "http://localhost:8081/" + response.data[i];
+            let adress = "https://gocke-photo.de:8081/" + response.data[i];
             imagesReturn.push(adress);
           }
         }
@@ -53,7 +56,7 @@ function Photopage(props) {
         // handle error
         console.log(error);
       });
-  }, []);
+  }, [location]);
 
   function getImageHTML() {
     let imagesReturn = [];
@@ -79,13 +82,21 @@ function Photopage(props) {
     let linksReturn = [];
 
     for (let i = 0; i < links.length; i++) {
-      let link = <div className="linkColumn"><a href={location + "/" + links[i]}><img className="linkPanel" alt={links[i]} src={"http://localhost:8081/" + links[i] + ".jpg"}></img></a></div>;
+      let link = (
+        <div className="linkColumn">
+          <Link to={location + "/" + links[i]}>
+            <img
+              className="linkPanel"
+              alt={links[i]}
+              src={"https://gocke-photo.de:8081/" + links[i] + ".jpg"}
+            ></img>
+          </Link>
+        </div>
+      );
       linksReturn.push(link);
     }
     return linksReturn;
   }
-
-  console.log(images);
 
   return (
     <div className="photoPage">
