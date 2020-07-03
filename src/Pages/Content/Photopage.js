@@ -98,6 +98,13 @@ function Photopage(props) {
     return linksReturn;
   }
 
+  function getLocationName() {
+    let lastSlash  = location.lastIndexOf("/");
+    let shortLocation = location.substring(lastSlash + 1);
+    shortLocation = shortLocation.charAt(0).toUpperCase() + shortLocation.slice(1);
+    return shortLocation;
+  }
+
   return (
     <div className="photoPage">
       <Header />
@@ -115,6 +122,7 @@ function Photopage(props) {
           onMoveNextRequest={() =>
             setPhotoIndex((photoIndex + 1) % images.length)
           }
+          imageTitle={getLocationName()}
         />
       )}
     </div>
