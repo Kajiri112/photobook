@@ -5,14 +5,33 @@ import Header from "../Header";
 import Lightbox from "react-image-lightbox";
 import "react-image-lightbox/style.css";
 import { useLocation, Link } from "react-router-dom";
+import EXIF from "exif-js";
+import moment from "moment";
+
+export function calculateImagesReturn(linkArray, location) {
+  let imagesReturn = [];
+  for (let i = 0; i < linkArray.length; i++) {
+    if (
+      linkArray[i].startsWith(location) &&
+      linkArray[i].lastIndexOf("/") == location.length
+    ) {
+      let adress = "https://gocke-photo.de:8081/" + linkArray[i];
+      imagesReturn.push(adress);
+    }
+  }
+  return imagesReturn;
+}
 
 function Photopage(props) {
   const [images, setImages] = useState([]);
   const [links, setLinks] = useState([]);
   const [photoIndex, setPhotoIndex] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
+  const [updateImageDetails, setUpdateImageDetails] = useState({});
+  const [imageDetails, setImageDetails] = useState([]);
+
   let location = useLocation().pathname;
-  if(location.endsWith("/")) {
+  if (location.endsWith("/")) {
     location = location.substring(0, location.length - 1);
   }
 
@@ -22,17 +41,8 @@ function Photopage(props) {
       .get("https://gocke-photo.de:8081/images")
       .then(function (response) {
         // handle success
-        let imagesReturn = [];
-        for (let i = 0; i < response.data.length; i++) {
-          if (
-            response.data[i].startsWith(location) &&
-            response.data[i].lastIndexOf("/") == location.length
-          ) {
-            let adress = "https://gocke-photo.de:8081/" + response.data[i];
-            imagesReturn.push(adress);
-          }
-        }
-        setImages(imagesReturn);
+
+        setImages(calculateImagesReturn(response.data, location));
 
         // handle success
         let linksReturn = [];
@@ -57,6 +67,12 @@ function Photopage(props) {
         console.log(error);
       });
   }, [location]);
+
+  useEffect(() => {
+    var detailsCopy = [...imageDetails];
+    detailsCopy[updateImageDetails.index] = updateImageDetails.value;
+    setImageDetails(detailsCopy);
+  }, [updateImageDetails]);
 
   function getImageHTML() {
     let imagesReturn = [];
@@ -99,10 +115,50 @@ function Photopage(props) {
   }
 
   function getLocationName() {
-    let lastSlash  = location.lastIndexOf("/");
+    let lastSlash = location.lastIndexOf("/");
     let shortLocation = location.substring(lastSlash + 1);
-    shortLocation = shortLocation.charAt(0).toUpperCase() + shortLocation.slice(1);
+    shortLocation =
+      shortLocation.charAt(0).toUpperCase() + shortLocation.slice(1);
     return shortLocation;
+  }
+
+  function getExif(imgSrc, srcType, image) {
+    let detailsIndex = null;
+    if (srcType == "mainSrc") {
+      detailsIndex = photoIndex;
+    }
+    if (srcType == "nextSrc") {
+      detailsIndex = (photoIndex + 1) % images.length;
+    }
+    if (srcType == "prevSrc") {
+      detailsIndex = (photoIndex + images.length - 1) % images.length;
+    }
+
+    EXIF.getData(image, function () {
+      const data = EXIF.getAllTags(this);
+
+      setUpdateImageDetails({
+        index: detailsIndex,
+        value: data,
+      });
+    });
+  }
+
+  function getCaptionHTML(data) {
+    console.log(data)
+    if (data && data.FNumber && data.ExposureTime) {
+      var tstamp = moment(data.DateTimeOriginal, "YYYY:MM:DD HH:mm:ss").format("DD.MM.YYYY");
+      return (
+        <div>
+          <div>{tstamp}</div>
+          <div>{data.Model}</div>
+          <div>f/{data.FNumber.numerator / data.FNumber.denominator}</div>
+          <div>{data.ExposureTime.numerator}/{data.ExposureTime.denominator}</div>
+          <div>{data.FocalLength.numerator /data.FocalLength.denominator} mm</div>
+          <div>ISO {data.ISOSpeedRatings}</div>
+        </div>
+      );
+    }
   }
 
   return (
@@ -123,6 +179,10 @@ function Photopage(props) {
             setPhotoIndex((photoIndex + 1) % images.length)
           }
           imageTitle={getLocationName()}
+          onImageLoad={(imgSrc, srcType, image) =>
+            getExif(imgSrc, srcType, image)
+          }
+          imageCaption={getCaptionHTML(imageDetails[photoIndex])}
         />
       )}
     </div>
