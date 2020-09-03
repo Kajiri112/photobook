@@ -15,7 +15,21 @@ export function calculateImagesReturn(linkArray, location) {
       linkArray[i].startsWith(location) &&
       linkArray[i].lastIndexOf("/") == location.length
     ) {
-      let adress = "https://gocke-photo.de:8081/" + linkArray[i];
+      let adress = "https://gocke-photo.de:8081/images" + linkArray[i];
+      imagesReturn.push(adress);
+    }
+  }
+  return imagesReturn;
+}
+
+export function calculateThumbnailsReturn(linkArray, location) {
+  let imagesReturn = [];
+  for (let i = 0; i < linkArray.length; i++) {
+    if (
+      linkArray[i].startsWith(location) &&
+      linkArray[i].lastIndexOf("/") == location.length
+    ) {
+      let adress = "https://gocke-photo.de:8081/thumbnails" + linkArray[i];
       imagesReturn.push(adress);
     }
   }
@@ -24,6 +38,7 @@ export function calculateImagesReturn(linkArray, location) {
 
 function Photopage(props) {
   const [images, setImages] = useState([]);
+  const [thumbnails, setThumbnails] = useState([]);
   const [links, setLinks] = useState([]);
   const [photoIndex, setPhotoIndex] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
@@ -43,6 +58,7 @@ function Photopage(props) {
         // handle success
 
         setImages(calculateImagesReturn(response.data, location));
+        setThumbnails(calculateThumbnailsReturn(response.data, location));
 
         // handle success
         let linksReturn = [];
@@ -77,11 +93,11 @@ function Photopage(props) {
   function getImageHTML() {
     let imagesReturn = [];
 
-    for (let i = 0; i < images.length; i++) {
+    for (let i = 0; i < thumbnails.length; i++) {
       let image = (
         <img
           className="image"
-          src={images[i]}
+          src={thumbnails[i]}
           key={i}
           onClick={() => {
             setPhotoIndex(i);
@@ -104,7 +120,7 @@ function Photopage(props) {
             <img
               className="linkPanel"
               alt={links[i]}
-              src={"https://gocke-photo.de:8081/" + links[i] + ".jpg"}
+              src={"https://gocke-photo.de:8081/images/" + links[i] + ".jpg"}
             ></img>
           </Link>
         </div>
